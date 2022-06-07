@@ -1,5 +1,5 @@
 const API_URL_MOCK = process.env.REACT_APP_MOCK_SERVER
-const API_URL_PROD = "https://dashboard.heroku.com"
+const API_URL_PROD = "https://devcampback.herokuapp.com"
 
 export const getHostedServer = (path) => {
   if(!path) {
