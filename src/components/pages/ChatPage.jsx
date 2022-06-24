@@ -26,8 +26,8 @@ export const ChatPage = () => {
   const navigate = useNavigate();
 
   
-  const handleChatChange = (chat) => {
-    setCurrentChat(chat);
+  const handleChatChange = async (chat) => {
+    await setCurrentChat(chat);
   };
 
   useQuery("getAllGroups", getAllGroups, {
@@ -44,9 +44,10 @@ export const ChatPage = () => {
     connectToSocket();
   }, []);
 
-  useEffect(() => {
-    setCurrentUser(JSON.parse(localStorage.getItem("user")));
-  }, []);
+  useEffect( () => {
+    let user = JSON.parse(localStorage.getItem("user"));
+    setCurrentUser(user)
+  }, [currentUser]);
 
 
   return (
