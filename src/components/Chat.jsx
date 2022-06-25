@@ -28,7 +28,6 @@ export const Chat = () => {
 
     const {data} = await sendMessage(message, currentChat, currentUser.id);
     const msgs = [...messages];
-    console.log(data);
     msgs.push({ message: data.newMessage.message, sender: currentUser.id });
     setMessages(msgs);
   };

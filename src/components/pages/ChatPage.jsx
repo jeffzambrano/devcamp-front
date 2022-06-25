@@ -13,7 +13,7 @@ import { ToastContainer } from "react-toastify";
 import { logoutUser } from "../../services/users";
 import { NewChatModal } from "../NewChatModal";
 import { ChatTab } from "../ChatTab";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { getAllGroups } from "../../services/messaging";
 import { getHostedServer } from "../../config";
 
@@ -25,29 +25,52 @@ export const ChatPage = () => {
   const [showModal, setShowModal] = useState(true);
   const navigate = useNavigate();
 
-  
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
   const handleChatChange = async (chat) => {
     await setCurrentChat(chat);
   };
 
-  useQuery("getAllGroups", getAllGroups, {
+  const getCurrentUserFromLocalStorage = () => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      return JSON.parse(user);
+    }
+    return null;
+  };
+  const getCurrentUser = async () => {
+    const user = await getCurrentUserFromLocalStorage();
+    if (user) {
+      setCurrentUser(user);
+    }
+  };
+  const groupQuery = useQuery("getAllGroups", getAllGroups, {
     onSuccess: (data) => {
       setGroups(data);
     },
   });
 
+  const handleNewGroup = async (group) => {
+    await setGroups([...groups, group]);
+  };
+
   const connectToSocket = () => {
-    const socket = io(getHostedServer());
+    const socket = io(getHostedServer(), [{ transports: ["websocket"] }]);
+    return socket;
   };
 
   useEffect(() => {
-    connectToSocket();
+    const socket = connectToSocket();
+    socket.on("connect", () => {
+      console.log("connected to socket");
+    });
+    getCurrentUser();
+    return () => {
+      socket.disconnect();
+    };
   }, []);
-
-  useEffect( () => {
-    let user = JSON.parse(localStorage.getItem("user"));
-    setCurrentUser(user)
-  }, [currentUser]);
 
 
   return (
@@ -124,11 +147,10 @@ export const ChatPage = () => {
         </div>
         <ToastContainer />
         <NewChatModal
-          showModal={showModal}
-          setShowModal={setShowModal}
+          toggleModal={toggleModal}
           user={currentUser}
-          setGroups={setGroups}
-          groups={groups}
+          handleNewGroup={handleNewGroup}
+          showModal={showModal}
         />
       </div>
     </>

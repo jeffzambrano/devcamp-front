@@ -17,7 +17,6 @@ export const MagicLinkPage = ({ setAuthenticated }) => {
     navigate("/");
   });
 
-  console.log(data)
 
   return (
     <div>
