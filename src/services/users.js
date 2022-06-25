@@ -24,7 +24,6 @@ const toastOptions = {
   axios.post(apiUrl, data)
     .then((res) => {
       if (res.data.token) {
-        console.log(res)
         localStorage.setItem("token", JSON.stringify(res.data.token));
         localStorage.setItem("user", JSON.stringify(res.data.user));
         toast.success(`${res.data.message}`, toastOptions);
@@ -35,7 +34,6 @@ const toastOptions = {
       }
     })
     .catch((err) => {
-      console.log(err);
       return false;
     });
 };
@@ -71,7 +69,6 @@ export const logoutUser = (email) => {
     email: email
   };
   const res = axios.post(apiUrl, data);
-  console.log(res)
 
   localStorage.removeItem("token");
   localStorage.removeItem("user");

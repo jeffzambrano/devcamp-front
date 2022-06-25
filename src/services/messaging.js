@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getHostedServer } from "../config";
+import { useMutation, useQueryClient } from "react-query";
 
-export const createGroup = async (groupName, userId) => {
+export const createGroup = async ({ groupName, userId }) => {
   const response = await axios.post(getHostedServer() + "/api/chat", {
     groupName,
     groupCreator: userId,
@@ -30,4 +31,15 @@ export const getAllMessages = async (groupId) => {
     getHostedServer() + `/api/chat/${groupId}/message`
   );
   return response.data;
+};
+
+export const useCreateGroup = () => {
+  const client = useQueryClient();
+  return useMutation(createGroup,{
+    onSuccess: async (data) => {
+      await client.setQueryData("getAllGroups", (oldQueryData) =>{
+        return [...oldQueryData, data.group];
+      });
+    }
+  });
 };
