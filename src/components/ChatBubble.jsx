@@ -4,7 +4,7 @@ export const ChatBubble = (props) => {
       <div className='chat__bubble'>
         <div className='chat__bubble-identification'>
           <img src='https://avatars.dicebear.com/api/human/:seed.svg' alt="profile"/>
-          <h4>raul puigbo</h4>
+          <h4>Jefferson Zambrano</h4>
         </div>
         <p className='chat__bubble-content'>{props.message}</p>
       </div>
